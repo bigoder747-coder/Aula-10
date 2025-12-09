@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Links de Avaliações</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Como enviar a avaliação 3: <a href="#" id="help-link">clique aqui para assistir</a></h1>
+
+    <section class="evaluation">
+      <h2>Link da Avaliação 1:</h2>
+      <div class="row">
+        <input type="text" id="link1" placeholder="Não foi enviado ainda" readonly />
+        <button class="btn send" data-id="1">Enviar</button>
+      </div>
+    </section>
+
+    <section class="evaluation">
+      <h2>Link da Avaliação 2:</h2>
+      <div class="row">
+        <input type="text" id="link2" placeholder="https://programe..." />
+        <button class="btn view" data-id="2">Ver</button>
+        <button class="btn send" data-id="2">Enviar</button>
+      </div>
+    </section>
+
+    <section class="evaluation">
+      <h2>Link da Avaliação 3:</h2>
+      <div class="row">
+        <input type="text" id="link3" placeholder="https://programe..." />
+        <button class="btn view" data-id="3">Ver</button>
+        <button class="btn send" data-id="3">Enviar</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+<script>
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=> t.classList.remove('visible'), 2500);
+}
+
+document.querySelectorAll('.btn.view').forEach(btn=>{
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.id;
+    const input = document.getElementById('link'+id);
+    const url = input.value.trim();
+    if(!url){
+      showToast('Nenhum link disponível.');
+      return;
+    }
+    const finalUrl = url.match(/^https?:\/\//i) ? url : 'https://' + url;
+    window.open(finalUrl, '_blank');
+  });
+});
+
+document.querySelectorAll('.btn.send').forEach(btn=>{
+  btn.addEventListener('click', async () => {
+    const id = btn.dataset.id;
+    const input = document.getElementById('link'+id);
+    const link = prompt('Cole o link da avaliação para enviar:', input.value || '');
+    if(link === null) return; 
+    const trimmed = link.trim();
+    if(!trimmed){
+      showToast('Link inválido.');
+      return;
+    }
+    input.value = trimmed;
+    btn.textContent = 'Enviado';
+    btn.classList.add('sent');
+    btn.disabled = true;
+    showToast('Avaliação '+id+' enviada com sucesso!');
+  });
+});
+
+document.getElementById('help-link').addEventListener('click', (e)=>{
+  e.preventDefault();
+  showToast('Assista ao vídeo/siga as instruções do professor.');
+});
+</script>
+</body>
+</html>
